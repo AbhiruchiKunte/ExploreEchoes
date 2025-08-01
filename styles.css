@@ -528,15 +528,15 @@ nav {
 }
 
 /* Element 7: Team Section */
-.team-member-card {
-    background: linear-gradient(135deg, #1e293b, #0f172a);
-    border: 1px solid #3b82f6; 
+        .team-member-card {
+    background: linear-gradient(135deg, #1e293b, #0f172a); /* Subtle gradient */
+    border: 1px solid #3b82f6; /* Glow effect border */
     border-radius: 1rem;
     padding: 2rem 1.5rem;
     text-align: center;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2); 
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2); /* Soft blue shadow */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -546,12 +546,12 @@ nav {
 }
 
 .team-member-card h4 {
-    color: #60a5fa; 
+    color: #60a5fa; /* Softer blue than #3b82f6 */
     margin-bottom: 0.5rem;
 }
 
 .team-member-card p {
-    color: #cbd5e1;
+    color: #cbd5e1; /* lighter gray for better readability */
     font-size: 0.95rem;
 }
 
