@@ -25,21 +25,33 @@
     </div>
 
     <!-- Element 4: Navbar -->
-    <nav class="fixed top-0 left-0 w-full bg-slate-800/95 backdrop-blur-sm p-4 flex justify-between items-center z-50 shadow-lg border-b border-slate-700">
+     <nav class="fixed top-0 left-0 w-full bg-slate-800/95 backdrop-blur-sm p-4 flex justify-between items-center z-50 shadow-lg border-b border-slate-700">
         <div class="text-2xl font-bold text-white logo">ExploreEchoes</div>
-        <div class="hamburger-menu" id="hamburger-menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-        <div class="nav-menu" id="nav-menu">
-            <a href="#home">Home</a>
-            <a href="#destinations">Destinations</a>
-            <a href="#team">Our Guides</a>
-            <a href="#mystery-element">Travel Globe</a>
-            <a href="#contact">Contact Us</a>
+        <div class="flex items-center space-x-4">
+             <div class="hidden md:flex nav-menu" id="nav-menu-desktop">
+                <a href="#home">Home</a>
+                <a href="#destinations">Destinations</a>
+                <a href="#team">Our Guides</a>
+                <a href="#mystery-element">Travel Globe</a>
+                <a href="#contact">Contact Us</a>
+            </div>
+            <!-- FIREBASE: Auth container for login/logout buttons -->
+            <div id="auth-container"></div>
+            <div class="hamburger-menu" id="hamburger-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </nav>
+     <!-- Mobile Nav Menu -->
+    <div class="nav-menu" id="nav-menu">
+        <a href="#home">Home</a>
+        <a href="#destinations">Destinations</a>
+        <a href="#team">Our Guides</a>
+        <a href="#mystery-element">Travel Globe</a>
+        <a href="#contact">Contact Us</a>
+    </div>
 
     <main id="main-content" class="page-content">
         <!-- Home Section -->
@@ -138,30 +150,29 @@
         </section>
 
         <!-- Element 7: Our Team Section -->
-        <section id="team" class="team-section">
-            <div class="container">
-                <h2 class="section-title">Meet Our Expert Guides</h2>
-                <div class="team-grid">
-                    <div class="team-member-card">
-                        <div class="team-info">
-                            <h4 class="team-name">Sarah "The Explorer" Johnson</h4>
-                            <p class="team-role">Adventure Specialist & Mountain Guide</p>
-                            <p class="team-bio">15+ years exploring remote destinations across 6 continents. Specializes in high-altitude adventures and cultural immersion.</p>
-                        </div>
-                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&auto=format" alt="Sarah Johnson" class="team-photo">
-                    </div>
-                    <div class="team-member-card">
-                        <div class="team-info">
-                            <h4 class="team-name">Marcus "The Navigator" Chen</h4>
-                            <p class="team-role">Logistics Coordinator & Wildlife Expert</p>
-                            <p class="team-bio">Marine biologist turned travel expert. Orchestrates seamless journeys with a focus on sustainable and wildlife-friendly tourism.</p>
-                        </div>
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&auto=format" alt="Marcus Chen" class="team-photo">
-                    </div>
-                </div>
-                <p class="team-description">Hover over our guides to see their travel portraits!</p>
-            </div>
-        </section>
+<section id="team" class="bg-slate-800 py-16 px-4">
+  <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center text-blue-200">Meet Our Expert Guides</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+    <div class="team-member-card">
+      <h4 class="text-2xl font-bold mb-2">Alex "The Explorer" Smith</h4>
+      <p>Adventure Specialist</p>
+      <img src="https://placehold.co/120x120/3b82f6/FFFFFF?text=Alex" alt="Alex Smith" class="team-photo">
+    </div>
+
+    <div class="team-member-card">
+      <h4 class="text-2xl font-bold mb-2">Maya "The Navigator" Johnson</h4>
+      <p>Logistics Coordinator</p>
+      <img src="https://placehold.co/120x120/3b82f6/FFFFFF?text=Maya" alt="Maya Johnson" class="team-photo">
+    </div>
+
+    <div class="team-member-card">
+      <h4 class="text-2xl font-bold mb-2">Chris "The Culture" Brown</h4>
+      <p>Cultural Immersion Expert</p>
+      <img src="https://placehold.co/120x120/3b82f6/FFFFFF?text=Chris" alt="Chris Brown" class="team-photo">
+    </div>
+  </div>
+</section>
 
         <!-- Element 10: Mystery Element (3D Globe) -->
         <section id="mystery-element" class="mystery-section">
@@ -202,13 +213,14 @@
         </section>
 
         <!-- Contact Section -->
-        <section id="contact" class="contact-section">
+         <section id="contact" class="contact-section">
             <div class="container">
                 <h2 class="section-title">Plan Your Next Journey</h2>
                 <p class="contact-subtitle">
                     Ready to explore? Send us a message and let's plan your dream trip!
                 </p>
-                <form class="contact-form">
+                <!-- FIREBASE: Added an ID to the form for easier targeting -->
+                <form id="contact-form" class="contact-form">
                     <div class="form-group">
                         <input type="text" placeholder="Your Name" required>
                         <i class="fas fa-user form-icon"></i>
@@ -285,9 +297,17 @@
                 <p>&copy; 2025 ExploreEchoes. All rights reserved.</p>
             </div>
         </div>
-    </footer>
+    </footer> 
+
+    <!-- FIREBASE: Notification Modal -->
+    <div id="notification-modal" class="modal">
+        <div class="modal-content">
+            <p id="modal-message" class="text-lg">Message goes here</p>
+            <button id="modal-close-btn" class="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg font-bold">Close</button>
+        </div>
+    </div>
 
     <!-- Custom JavaScript -->
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>

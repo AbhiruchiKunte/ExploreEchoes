@@ -1,3 +1,28 @@
+// --- FIREBASE SDK IMPORTS ---
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, setDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+
+// --- FIREBASE CONFIGURATION ---
+// This is the configuration from your original file.
+const firebaseConfig = {
+    apiKey: "AIzaSyAmk9dEz4cBSQHTM_YUsPEPaY0Ld643fz8",
+    authDomain: "exploreechoes-73c74.firebaseapp.com",
+    projectId: "exploreechoes-73c74",
+    storageBucket: "exploreechoes-73c74.appspot.com", // Corrected storage bucket URL
+    messagingSenderId: "936836633672",
+    appId: "1:936836633672:web:f9079c4eed54bc3abdf47d",
+    measurementId: "G-K03KYZ71KZ"
+};
+
+// --- INITIALIZE FIREBASE & SERVICES ---
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();  
+
+// --- DOMContentLoaded Event Listener ---
 document.addEventListener('DOMContentLoaded', () => {
     const loaderPage = document.getElementById('loader-page');
     const mainContent = document.getElementById('main-content');
@@ -445,18 +470,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Team member card interactions
-    const teamCards = document.querySelectorAll('.team-member-card');
-    teamCards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            card.style.transform = 'translateY(-10px) scale(1.02)';
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'translateY(0) scale(1)';
-        });
-    });
-
     // CTA button interactions
     const ctaButton = document.querySelector('.cta-button');
     if (ctaButton) {
@@ -676,7 +689,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Add typing effect to hero title (optional enhancement)
-    const heroTitle = document.querySelector('.hero-title');
+    const heroTitle = document.querySelector('.text-gradient');
     if (heroTitle && heroTitle.textContent) {
         const originalText = heroTitle.innerHTML;
         heroTitle.innerHTML = '';
@@ -698,26 +711,108 @@ document.addEventListener('DOMContentLoaded', () => {
 });
         
 
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+// --- FIREBASE INTEGRATION LOGIC ---
+    
+    const authContainer = document.getElementById('auth-container');
+    const teamGrid = document.getElementById('team-grid');
+    const contactForm = document.getElementById('contact-form');
+    const notificationModal = document.getElementById('notification-modal');
+    const modalMessage = document.getElementById('modal-message');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyAmk9dEz4cBSQHTM_YUsPEPaY0Ld643fz8",
-    authDomain: "exploreechoes-73c74.firebaseapp.com",
-    projectId: "exploreechoes-73c74",
-    storageBucket: "exploreechoes-73c74.firebasestorage.app",
-    messagingSenderId: "936836633672",
-    appId: "1:936836633672:web:f9079c4eed54bc3abdf47d",
-    measurementId: "G-K03KYZ71KZ"
-  };
+    // Helper function to show notifications
+    function showModal(message) {
+        if (modalMessage) modalMessage.textContent = message;
+        if (notificationModal) notificationModal.classList.add('show');
+    }
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+    // Event listener to close the modal
+    if (modalCloseBtn) {
+        modalCloseBtn.addEventListener('click', () => {
+            if (notificationModal) notificationModal.classList.remove('show');
+        });
+    }
+
+    // FEATURE 1: AUTHENTICATION
+    onAuthStateChanged(auth, (user) => {
+        if (!authContainer) return;
+        if (user) {
+            // User is signed in
+            authContainer.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <img src="${user.photoURL}" alt="User" class="w-8 h-8 rounded-full border-2 border-blue-400"/>
+                    <button id="logout-btn" class="px-3 py-1 bg-red-500 text-white rounded-md text-sm font-bold hover:bg-red-600 transition">Logout</button>
+                </div>
+            `;
+            document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+        } else {
+            // User is signed out
+            authContainer.innerHTML = `
+                <button id="login-btn" class="px-3 py-1 bg-blue-500 text-white rounded-md text-sm font-bold hover:bg-blue-600 transition">Login</button>
+            `;
+            document.getElementById('login-btn').addEventListener('click', () => signInWithPopup(auth, provider));
+        }
+    });
+
+    // FEATURE 2: DYNAMIC GUIDES FROM FIRESTORE
+    async function fetchAndDisplayGuides() {
+        if (!teamGrid) return;
+        try {
+            const guidesSnapshot = await getDocs(collection(db, "guides"));
+            if (guidesSnapshot.empty) {
+                teamGrid.innerHTML = '<p class="text-center col-span-full text-slate-400">Our guides are currently on an adventure! Check back later.</p>';
+                return;
+            }
+            let guidesHtml = "";
+            guidesSnapshot.forEach((doc) => {
+                const guide = doc.data();
+                guidesHtml += `
+                    <div class="team-member-card">
+                        <div class="team-info">
+                            <h4 class="team-name">${guide.name}</h4>
+                            <p class="team-role">${guide.role}</p>
+                            <p class="team-bio">${guide.bio}</p>
+                        </div>
+                        <img src="${guide.photoUrl}" alt="${guide.name}" class="team-photo">
+                    </div>
+                `;
+            });
+            teamGrid.innerHTML = guidesHtml;
+        } catch (error) {
+            console.error("Error fetching guides: ", error);
+            teamGrid.innerHTML = '<p class="text-center text-red-500 col-span-full">Could not load guide information. Please try again later.</p>';
+        }
+    }
+    fetchAndDisplayGuides(); // Call the function to load guides
+
+    // FEATURE 3: REAL-TIME CONTACT FORM
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitButton = contactForm.querySelector('button[type="submit"]');
+            const originalButtonContent = submitButton.innerHTML;
+            
+            submitButton.innerHTML = '<span>Sending...</span><i class="fas fa-spinner fa-spin ml-2"></i>';
+            submitButton.disabled = true;
+
+            const inquiry = {
+                name: contactForm.querySelector('input[type="text"]').value,
+                email: contactForm.querySelector('input[type="email"]').value,
+                travelType: contactForm.querySelector('select').value,
+                message: contactForm.querySelector('textarea').value,
+                submittedAt: new Date()
+            };
+
+            try {
+                await addDoc(collection(db, "inquiries"), inquiry);
+                showModal("Thank you! Your inquiry has been sent successfully.");
+                contactForm.reset();
+            } catch (error) {
+                console.error("Error submitting inquiry: ", error);
+                showModal("Something went wrong. Please try again.");
+            } finally {
+                submitButton.innerHTML = originalButtonContent;
+                submitButton.disabled = false;
+            }
+        });
+    }   
