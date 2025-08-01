@@ -29,7 +29,9 @@ Crafted to impress both users and judges, ExploreEchoes combines visual finesse,
 
 ---
 
-🔗 **Live Project:** [https://your-live-site-link.com](https://your-live-site-link.com)
+## 🌐 Live Demo
+
+[https://your-live-site-link.com](https://your-live-site-link.com)
 
 ---
 
@@ -37,10 +39,7 @@ Crafted to impress both users and judges, ExploreEchoes combines visual finesse,
 
 **Team Name:** *Quadcodes*  
 **Developers:** Abhiruchi Kunte and Govind Choudhari
-
-**Email:** kunteabhiruchi@gmail.com  
-**GitHub:** [@AbhiruchiKunte(https://github.com/AbhiruchiKunte)  
-
+* **GitHub:** [AbhiruchiKunte](https://github.com/AbhiruchiKunte)
+* **Email:** [kunteabhiruchi@gmail.com](mailto:kunteabhiruchi@gmail.com) 
+* **LinkedIn:** [Abhiruchi Kunte](https://www.linkedin.com/in/abhiruchi-kunte-00602b28b/)
 ---
-
-
