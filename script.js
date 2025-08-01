@@ -657,7 +657,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     `;
-    document.head.appendChild(floatStyle);
+    document.head.appendChild(floatStyle); 
 
     // Console log for developers
     console.log(`

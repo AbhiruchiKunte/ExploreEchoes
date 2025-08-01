@@ -528,53 +528,53 @@ nav {
 }
 
 /* Element 7: Team Section */
-        .team-member-card {
-    background: linear-gradient(135deg, #1e293b, #0f172a); /* Subtle gradient */
-    border: 1px solid #3b82f6; /* Glow effect border */
-    border-radius: 1rem;
-    padding: 2rem 1.5rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2); /* Soft blue shadow */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+#team .team-member-card {
+  background: linear-gradient(135deg, #1e293b, #0f172a) !important;
+  border: 1px solid #3b82f6 !important;
+  border-radius: 1rem !important;
+  padding: 2rem 1.5rem !important;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(59,130,246, 0.2) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.team-member-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
+#team .team-member-card:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: 0 8px 20px rgba(59,130,246,0.35) !important;
 }
 
-.team-member-card h4 {
-    color: #60a5fa; /* Softer blue than #3b82f6 */
-    margin-bottom: 0.5rem;
+#team .team-member-card h4 {
+  color: #60a5fa !important;
+  margin-bottom: 0.5rem !important;
 }
 
-.team-member-card p {
-    color: #cbd5e1; /* lighter gray for better readability */
-    font-size: 0.95rem;
+#team .team-member-card p {
+  color: #cbd5e1 !important;
+  font-size: 0.95rem !important;
 }
 
-.team-member-card .team-photo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid #60a5fa;
-    box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
-    transition: transform 0.4s ease, opacity 0.4s ease;
-    opacity: 0;
-    z-index: 10;
+#team .team-member-card .team-photo {
+  position: absolute !important;
+  top: 50% !important; left: 50% !important;
+  transform: translate(-50%, -50%) scale(0) !important;
+  width: 120px !important;
+  height: 120px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  border: 4px solid #60a5fa !important;
+  box-shadow: 0 8px 32px rgba(96,165,250,0.5) !important;
+  transition: all 0.4s cubic-bezier(0.4,0,0.2,1) !important;
+  opacity: 0 !important;
+  z-index: 10;
 }
 
-.team-member-card:hover .team-photo {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
+#team .team-member-card:hover .team-photo {
+  transform: translate(-50%, -50%) scale(1) !important;
+  opacity: 1 !important;
 }
+
 
 /* Element 10: Mystery Element (Three.js Globe) */
 #mystery-element-container {
@@ -969,15 +969,15 @@ html {
 }
 
  /* <!-- FIREBASE -->: Styles for the notification modal */
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center;
-            z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
+.modal {
+position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center;
+z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
         }
-        .modal.show { opacity: 1; visibility: visible; }
-        .modal-content {
-            background: #334155; padding: 2rem; border-radius: 1rem; text-align: center;
-            transform: scale(0.9); transition: transform 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+.modal.show { opacity: 1; visibility: visible; }
+.modal-content {
+background: #334155; padding: 2rem; border-radius: 1rem; text-align: center;
+transform: scale(0.9); transition: transform 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
         .modal.show .modal-content { transform: scale(1); }
         .modal-close-btn { background-color: #3b82f6; }
