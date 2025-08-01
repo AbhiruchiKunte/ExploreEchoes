@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust Web - PixxelHack</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js CDN for Mystery Element -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Font Awesome for social icons in footer -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scroll due to animations */
+            margin: 0;
+            padding: 0;
+            background-color: #0f172a; /* Dark background for the site */
+            color: #e2e8f0; /* Light text color */
+        }
+
+        /* Element 1: Loader Page */
+        #loader-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1a202c;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease-out, visibility 1s ease-out;
+        }
+
+        .loader {
+            border: 8px solid #3b82f6; /* Blue */
+            border-top: 8px solid #ef4444; /* Red */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Element 4: Navbar */
+        .hamburger-menu {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 20px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .hamburger-menu span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background-color: #e2e8f0;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .hamburger-menu.open span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+
+        .hamburger-menu.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-menu.open span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            right: -100%; /* Start off-screen */
+            width: 70%; /* Adjust for mobile */
+            max-width: 300px; /* Max width for larger screens */
+            height: 100%;
+            background-color: #1e293b;
+            padding-top: 80px;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+            transition: right 0.4s ease-in-out;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .nav-menu.open {
+            right: 0;
+        }
+
+        .nav-menu a {
+            padding: 15px 20px;
+            color: #e2e8f0;
+            text-decoration: none;
+            width: 100%;
+            text-align: center;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .nav-menu a:hover {
+            background-color: #334155;
+        }
+
+        /* Element 6: Infinite Marquee */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
+            background-color: #334155;
+            padding: 1rem 0;
+            margin: 2rem 0;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+            padding-left: 100%; /* Start off-screen to the right */
+        }
+
+        .marquee-content span {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-right: 2rem;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-100%); } /* Move fully to the left */
+        }
+
+        /* Element 8: Ripple Effect */
+        .ripple-button {
+            position: relative;
+            overflow: hidden;
+            background-color: #3b82f6;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .ripple-button:hover {
+            background-color: #2563eb;
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.7);
+            animation: ripple-animation 0.6s linear forwards;
+            transform: scale(0);
+            pointer-events: none; /* Allow clicks to pass through */
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Element 9: Text Animation (Scroll-Based Sizing) */
+        #scroll-text {
+            font-size: 2rem; /* Initial font size */
+            font-weight: 700;
+            text-align: center;
+            padding: 5rem 0;
+            transition: font-size 0.1s ease-out; /* Smooth transition for font size */
+            color: #f8fafc;
+        }
+
+        /* Element 10: Mystery Element (Three.js Cube) */
+        #mystery-element-container {
+            width: 100%;
+            height: 400px; /* Fixed height for the canvas */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #1e293b;
+            border-radius: 1rem;
+            overflow: hidden; /* Ensure cube doesn't overflow */
+        }
+
+        canvas {
+            display: block;
+        }
+
+        /* Custom cursor for image grid (Element 3) */
+        .custom-cursor {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.7);
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease-out, background-color 0.2s ease-out;
+            transform: translate(-50%, -50%); /* Center the cursor */
+        }
+
+        .image-grid-item:hover ~ .custom-cursor {
+            transform: translate(-50%, -50%) scale(1.5);
+            background-color: rgba(59, 130, 246, 0.7); /* Blue on hover */
+        }
+
+        /* Element 2: Image Hover - Specific styling for the image change */
+        .hover-image-container {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .hover-image-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .hover-image-container .image-default {
+            opacity: 1;
+        }
+
+        .hover-image-container .image-hover {
+            opacity: 0;
+        }
+
+        .hover-image-container:hover .image-default {
+            opacity: 0;
+        }
+
+        .hover-image-container:hover .image-hover {
+            opacity: 1;
+        }
+
+        /* Element 7: Team Section */
+        .team-member-card {
+            background-color: #1e293b;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .team-member-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .team-member-card .team-photo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0); /* Start hidden */
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #3b82f6;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
+            z-index: 10;
+        }
+
+        .team-member-card:hover .team-photo {
+            transform: translate(-50%, -50%) scale(1); /* Pop up */
+            opacity: 1;
+        }
+
+        /* Page Transition Simulation (Element 5) */
+        .page-content {
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .page-content.fade-out {
+            opacity: 0;
+        }
+
+        /* General Section Styling */
+        section {
+            padding: 4rem 1rem;
+            min-height: 80vh; /* Ensure sections are tall enough for scroll effects */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .nav-menu {
+                width: 250px; /* Larger width for tablets/desktops */
+            }
+            section {
+                padding: 6rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Element 1: Loader Page -->
+    <div id="loader-page">
+        <div class="loader"></div>
+        <p class="mt-4 text-xl text-white">Embarking on your journey...</p>
+    </div>
+
+    <!-- Element 4: Navbar -->
+    <nav class="fixed top-0 left-0 w-full bg-slate-800 p-4 flex justify-between items-center z-50 shadow-lg">
+        <div class="text-2xl font-bold text-white">Wanderlust Web</div>
+        <div class="hamburger-menu" id="hamburger-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-menu" id="nav-menu">
+            <a href="#home">Home</a>
+            <a href="#destinations">Destinations</a>
+            <a href="#team">Our Guides</a>
+            <a href="#mystery-element">Travel Globe</a>
+            <a href="#contact">Contact Us</a>
+        </div>
+    </nav>
+
+    <main id="main-content" class="page-content">
+        <!-- Home Section -->
+        <section id="home" class="bg-gradient-to-br from-blue-900 to-indigo-900 text-center">
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-4 text-white leading-tight">
+                Discover Your Next <span class="text-yellow-300">Adventure</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-blue-100 mb-8 max-w-2xl">
+                Explore breathtaking destinations and unique travel experiences.
+            </p>
+            <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out">
+                Start Exploring
+            </button>
+        </section>
+
+        <!-- Element 6: Infinite Marquee -->
+        <div class="marquee-container">
+            <div class="marquee-content">
+                <span>ADVENTURE AWAITS</span>
+                <span>EXPLORE THE WORLD</span>
+                <span>UNFORGETTABLE JOURNEYS</span>
+                <span>DISCOVER NEW CULTURES</span>
+                <span>PLAN YOUR ESCAPE</span>
+                <span>WANDERLUST WEB</span>
+                <span>TRAVEL FREELY</span>
+                <span>LIVE YOUR DREAMS</span>
+            </div>
+        </div>
+
+        <!-- Destinations Section (Elements Showcase) -->
+        <section id="destinations" class="bg-slate-900">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center text-white">Featured Destinations & Experiences</h2>
+
+            <!-- Element 2: Image Hover -->
+            <div class="mb-16 text-center">
+                <h3 class="text-3xl font-semibold mb-6 text-blue-400">Element 2: Destination Highlight</h3>
+                <div class="hover-image-container mx-auto">
+                    <img src="https://placehold.co/300x200/000000/FFFFFF?text=Tropical+Paradise" alt="Default Image" class="image-default">
+                    <img src="https://placehold.co/300x200/3b82f6/FFFFFF?text=Sunset+Beach" alt="Hover Image" class="image-hover">
+                </div>
+                <p class="mt-4 text-gray-400">Hover over to see the sunset view!</p>
+            </div>
+
+            <!-- Element 3: Image Grid with Cursor Animations -->
+            <div class="mb-16 text-center">
+                <h3 class="text-3xl font-semibold mb-6 text-blue-400">Element 3: Photo Gallery</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                    <div class="image-grid-item rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition duration-300 ease-in-out cursor-none">
+                        <img src="https://placehold.co/400x300/1e293b/e2e8f0?text=Mountains" alt="Mountains" class="w-full h-auto object-cover">
+                    </div>
+                    <div class="image-grid-item rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition duration-300 ease-in-out cursor-none">
+                        <img src="https://placehold.co/400x300/334155/e2e8f0?text=Cityscape" alt="Cityscape" class="w-full h-auto object-cover">
+                    </div>
+                    <div class="image-grid-item rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition duration-300 ease-in-out cursor-none">
+                        <img src="https://placehold.co/400x300/475569/e2e8f0?text=Forest" alt="Forest" class="w-full h-auto object-cover">
+                    </div>
+                    <div class="image-grid-item rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition duration-300 ease-in-out cursor-none">
+                        <img src="https://placehold.co/400x300/64748b/e2e8f0?text=Desert" alt="Desert" class="w-full h-auto object-cover">
+                    </div>
+                    <div class="image-grid-item rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition duration-300 ease-in-out cursor-none">
+                        <img src="https://placehold.co/400x300/94a3b8/e2e8f0?text=Ocean" alt="Ocean" class="w-full h-auto object-cover">
+                    </div>
+                    <div class="image-grid-item rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition duration-300 ease-in-out cursor-none">
+                        <img src="https://placehold.co/400x300/cbd5e1/1e293b?text=Waterfall" alt="Waterfall" class="w-full h-auto object-cover">
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-400">Hover over photos for an interactive experience!</p>
+                <div class="custom-cursor"></div>
+            </div>
+
+            <!-- Element 8: Ripple Effect -->
+            <div class="mb-16 text-center">
+                <h3 class="text-3xl font-semibold mb-6 text-blue-400">Element 8: Book Your Trip</h3>
+                <button class="ripple-button">Book Now!</button>
+                <p class="mt-4 text-gray-400">Click to experience a smooth booking interaction.</p>
+            </div>
+
+            <!-- Element 9: Text Animation (Scroll-Based Sizing) -->
+            <div class="mb-16 w-full">
+                <h3 class="text-3xl font-semibold mb-6 text-blue-400 text-center">Element 9: Your Journey, Your Story</h3>
+                <p id="scroll-text">Scroll to read more about our travel philosophy!</p>
+                <p class="text-center text-gray-400">Discover how your adventure unfolds as you scroll.</p>
+            </div>
+        </section>
+
+        <!-- Element 7: Our Team Section -->
+        <section id="team" class="bg-slate-800">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center text-white">Meet Our Expert Guides</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <div class="team-member-card">
+                    <h4 class="text-2xl font-bold text-blue-300 mb-2">Alex "The Explorer" Smith</h4>
+                    <p class="text-gray-400">Adventure Specialist</p>
+                    <img src="https://placehold.co/120x120/3b82f6/FFFFFF?text=Alex" alt="Alex Smith" class="team-photo">
+                </div>
+                <div class="team-member-card">
+                    <h4 class="text-2xl font-bold text-blue-300 mb-2">Maya "The Navigator" Johnson</h4>
+                    <p class="text-gray-400">Logistics Coordinator</p>
+                    <img src="https://placehold.co/120x120/3b82f6/FFFFFF?text=Maya" alt="Maya Johnson" class="team-photo">
+                </div>
+                <div class="team-member-card">
+                    <h4 class="text-2xl font-bold text-blue-300 mb-2">Chris "The Culture" Brown</h4>
+                    <p class="text-gray-400">Cultural Immersion Expert</p>
+                    <img src="https://placehold.co/120x120/3b82f6/FFFFFF?text=Chris" alt="Chris Brown" class="team-photo">
+                </div>
+            </div>
+            <p class="mt-8 text-gray-400">Hover over our guides to see their travel portraits!</p>
+        </section>
+
+        <!-- Element 10: Mystery Element (3D Cube) -->
+        <section id="mystery-element" class="bg-slate-950">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center text-white">Element 10: The Interactive Travel Globe</h2>
+            <div id="mystery-element-container">
+                <!-- Three.js canvas will be appended here -->
+            </div>
+            <p class="mt-8 text-gray-400">Drag your mouse to spin the globe and discover new horizons!</p>
+        </section>
+
+        <!-- About Us Section (Placeholder for Page Transition) -->
+        <section id="about" class="bg-gradient-to-br from-purple-900 to-pink-900 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 text-white">About Wanderlust Web</h2>
+            <p class="text-xl md:text-2xl text-purple-100 mb-8 max-w-2xl">
+                Your ultimate companion for planning and experiencing global adventures.
+            </p>
+            <p class="text-lg text-purple-200 max-w-3xl">
+                We believe travel enriches the soul. Our platform is designed to inspire, connect, and empower travelers with seamless planning tools and immersive digital experiences. Join us to explore the world, one journey at a time.
+            </p>
+        </section>
+
+        <!-- Contact Section (Placeholder for Page Transition) -->
+        <section id="contact" class="bg-slate-900 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 text-white">Plan Your Next Journey</h2>
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl">
+                Ready to explore? Send us a message and let's plan your dream trip!
+            </p>
+            <form class="w-full max-w-md mx-auto bg-slate-800 p-8 rounded-xl shadow-lg">
+                <div class="mb-4">
+                    <input type="text" placeholder="Your Name" class="w-full p-3 rounded-md bg-slate-700 text-white border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="mb-4">
+                    <input type="email" placeholder="Your Email" class="w-full p-3 rounded-md bg-slate-700 text-white border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="mb-6">
+                    <textarea placeholder="Tell us about your dream destination..." rows="5" class="w-full p-3 rounded-md bg-slate-700 text-white border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out w-full">
+                    Send Inquiry
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 text-gray-400 py-10 px-4">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+            <div>
+                <h3 class="text-xl font-bold text-white mb-4">Wanderlust Web</h3>
+                <p class="text-sm">Your gateway to unforgettable travel experiences. We craft journeys that inspire.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-white mb-4">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="#home" class="hover:text-blue-400 transition duration-200">Home</a></li>
+                    <li><a href="#destinations" class="hover:text-blue-400 transition duration-200">Destinations</a></li>
+                    <li><a href="#team" class="hover:text-blue-400 transition duration-200">Our Guides</a></li>
+                    <li><a href="#contact" class="hover:text-blue-400 transition duration-200">Contact Us</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-white mb-4">Follow Us</h3>
+                <div class="flex justify-center md:justify-start space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition duration-200"><i class="fab fa-facebook-f text-2xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition duration-200"><i class="fab fa-twitter text-2xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition duration-200"><i class="fab fa-instagram text-2xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition duration-200"><i class="fab fa-linkedin-in text-2xl"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-slate-700 mt-8 pt-6 text-center text-sm text-gray-500">
+            &copy; 2025 Wanderlust Web. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loaderPage = document.getElementById('loader-page');
+            const mainContent = document.getElementById('main-content');
+
+            // Element 1: Loader Page
+            setTimeout(() => {
+                loaderPage.style.opacity = '0';
+                loaderPage.style.visibility = 'hidden';
+                mainContent.style.opacity = '1'; // Ensure main content is visible after load
+            }, 2000); // Loader displays for 2 seconds
+
+            // Element 4: Navbar
+            const hamburgerMenu = document.getElementById('hamburger-menu');
+            const navMenu = document.getElementById('nav-menu');
+
+            hamburgerMenu.addEventListener('click', () => {
+                hamburgerMenu.classList.toggle('open');
+                navMenu.classList.toggle('open');
+            });
+
+            // Close nav menu when a link is clicked (for smooth page transition simulation)
+            navMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault(); // Prevent default anchor behavior for smooth scroll
+                    const targetId = link.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+
+                    // Element 5: Page Transition Simulation
+                    mainContent.classList.add('fade-out'); // Fade out current content
+                    setTimeout(() => {
+                        targetSection.scrollIntoView({ behavior: 'smooth' });
+                        mainContent.classList.remove('fade-out'); // Fade in new content
+                        hamburgerMenu.classList.remove('open');
+                        navMenu.classList.remove('open');
+                    }, 500); // Wait for fade-out to complete before scrolling
+                });
+            });
+
+            // Element 8: Ripple Effect
+            const rippleButton = document.querySelector('.ripple-button');
+            rippleButton.addEventListener('click', function(e) {
+                const button = this;
+                const circle = document.createElement('span');
+                const diameter = Math.max(button.clientWidth, button.clientHeight);
+                const radius = diameter / 2;
+
+                circle.style.width = circle.style.height = `${diameter}px`;
+                circle.style.left = `${e.clientX - button.offsetLeft - radius}px`;
+                circle.style.top = `${e.clientY - button.offsetTop - radius}px`;
+                circle.classList.add('ripple');
+
+                const ripple = button.getElementsByClassName('ripple')[0];
+
+                if (ripple) {
+                    ripple.remove();
+                }
+
+                button.appendChild(circle);
+            });
+
+            // Element 9: Text Animation (Scroll-Based Sizing)
+            const scrollText = document.getElementById('scroll-text');
+            const initialFontSize = parseFloat(getComputedStyle(scrollText).fontSize); // Get initial size in px
+
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                // Adjust the multiplier to control the speed of font size change
+                // You might need to fine-tune 0.05 based on desired effect
+                const newSize = initialFontSize + (scrollY * 0.05);
+                scrollText.style.fontSize = `${Math.max(20, Math.min(100, newSize))}px`; // Clamp between 20px and 100px
+            });
+
+            // Element 3: Image Grid with Custom Cursor
+            const customCursor = document.querySelector('.custom-cursor');
+            const imageGridItems = document.querySelectorAll('.image-grid-item');
+
+            document.addEventListener('mousemove', (e) => {
+                customCursor.style.left = `${e.clientX}px`;
+                customCursor.style.top = `${e.clientY}px`;
+            });
+
+            imageGridItems.forEach(item => {
+                item.addEventListener('mouseenter', () => {
+                    customCursor.classList.add('active'); // Add a class to change cursor style
+                });
+                item.addEventListener('mouseleave', () => {
+                    customCursor.classList.remove('active');
+                });
+            });
+
+            // Element 10: Mystery Element (Three.js Cube)
+            const mysteryElementContainer = document.getElementById('mystery-element-container');
+            let scene, camera, renderer, cube;
+            let isDragging = false;
+            let previousMousePosition = {
+                x: 0,
+                y: 0
+            };
+
+            function initThreeJS() {
+                // Scene
+                scene = new THREE.Scene();
+
+                // Camera
+                camera = new THREE.PerspectiveCamera(75, mysteryElementContainer.clientWidth / mysteryElementContainer.clientHeight, 0.1, 1000);
+                camera.position.z = 2;
+
+                // Renderer
+                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); // alpha: true for transparent background
+                renderer.setSize(mysteryElementContainer.clientWidth, mysteryElementContainer.clientHeight);
+                mysteryElementContainer.appendChild(renderer.domElement);
+
+                // Cube (now representing a globe/travel object)
+                const geometry = new THREE.SphereGeometry(0.8, 32, 32); // Use SphereGeometry for a globe-like object
+                const material = new THREE.MeshBasicMaterial({ color: 0x3b82f6, wireframe: true }); // Blue wireframe
+                cube = new THREE.Mesh(geometry, material);
+                scene.add(cube);
+
+                // Lighting (optional, but good practice for more complex scenes)
+                const ambientLight = new THREE.AmbientLight(0x404040); // soft white light
+                scene.add(ambientLight);
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+                directionalLight.position.set(1, 1, 1).normalize();
+                scene.add(directionalLight);
+
+                // Event Listeners for Interaction
+                renderer.domElement.addEventListener('mousedown', onMouseDown, false);
+                renderer.domElement.addEventListener('mouseup', onMouseUp, false);
+                renderer.domElement.addEventListener('mousemove', onMouseMove, false);
+
+                // Handle window resize
+                window.addEventListener('resize', onWindowResize, false);
+            }
+
+            function onMouseDown(event) {
+                isDragging = true;
+                previousMousePosition.x = event.clientX;
+                previousMousePosition.y = event.clientY;
+            }
+
+            function onMouseUp(event) {
+                isDragging = false;
+            }
+
+            function onMouseMove(event) {
+                if (!isDragging) return;
+
+                const deltaMove = {
+                    x: event.clientX - previousMousePosition.x,
+                    y: event.clientY - previousMousePosition.y
+                };
+
+                const rotationSpeed = 0.01; // Adjust for sensitivity
+
+                cube.rotation.y += deltaMove.x * rotationSpeed;
+                cube.rotation.x += deltaMove.y * rotationSpeed;
+
+                previousMousePosition.x = event.clientX;
+                previousMousePosition.y = event.clientY;
+            }
+
+            function onWindowResize() {
+                camera.aspect = mysteryElementContainer.clientWidth / mysteryElementContainer.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(mysteryElementContainer.clientWidth, mysteryElementContainer.clientHeight);
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                // If not dragging, add a subtle auto-rotation
+                if (!isDragging) {
+                    cube.rotation.x += 0.005;
+                    cube.rotation.y += 0.005;
+                }
+                renderer.render(scene, camera);
+            }
+
+            // Initialize Three.js when the window loads
+            window.onload = function() {
+                initThreeJS();
+                animate();
+            };
+        });
+    </script>
+</body>
+</html>
