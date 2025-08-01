@@ -255,182 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
 
-    // Element 10: Mystery Element (Three.js Globe)
-    const mysteryElementContainer = document.getElementById('mystery-element-container');
-    let scene, camera, renderer, globe;
-    let isDragging = false;
-    let previousMousePosition = { x: 0, y: 0 };
-
-    function initThreeJS() {
-        if (!mysteryElementContainer || !window.THREE) return;
-
-        // Scene
-        scene = new THREE.Scene();
-
-        // Camera
-        camera = new THREE.PerspectiveCamera(
-            75, 
-            mysteryElementContainer.clientWidth / mysteryElementContainer.clientHeight, 
-            0.1, 
-            1000
-        );
-        camera.position.z = 2.5;
-
-        // Renderer
-        renderer = new THREE.WebGLRenderer({ 
-            antialias: true, 
-            alpha: true 
-        });
-        renderer.setSize(mysteryElementContainer.clientWidth, mysteryElementContainer.clientHeight);
-        renderer.setClearColor(0x000000, 0);
-        mysteryElementContainer.appendChild(renderer.domElement);
-
-        // Globe (Sphere with wireframe)
-        const geometry = new THREE.SphereGeometry(0.8, 32, 32);
-        const material = new THREE.MeshBasicMaterial({ 
-            color: 0x3b82f6, 
-            wireframe: true,
-            transparent: true,
-            opacity: 0.8
-        });
-        globe = new THREE.Mesh(geometry, material);
-        scene.add(globe);
-
-        // Add some points for stars/destinations
-        const pointsGeometry = new THREE.BufferGeometry();
-        const pointsCount = 100;
-        const positions = new Float32Array(pointsCount * 3);
-
-        for (let i = 0; i < pointsCount * 3; i++) {
-            positions[i] = (Math.random() - 0.5) * 10;
-        }
-
-        pointsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        const pointsMaterial = new THREE.PointsMaterial({ 
-            color: 0x60a5fa, 
-            size: 0.02,
-            transparent: true,
-            opacity: 0.6
-        });
-        const points = new THREE.Points(pointsGeometry, pointsMaterial);
-        scene.add(points);
-
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
-        scene.add(ambientLight);
-        
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        directionalLight.position.set(1, 1, 1).normalize();
-        scene.add(directionalLight);
-
-        // Event Listeners for Interaction
-        const canvas = renderer.domElement;
-        canvas.addEventListener('mousedown', onMouseDown, false);
-        canvas.addEventListener('mouseup', onMouseUp, false);
-        canvas.addEventListener('mousemove', onMouseMove, false);
-        canvas.addEventListener('mouseleave', onMouseUp, false);
-
-        // Touch events for mobile
-        canvas.addEventListener('touchstart', onTouchStart, false);
-        canvas.addEventListener('touchend', onTouchEnd, false);
-        canvas.addEventListener('touchmove', onTouchMove, false);
-
-        // Handle window resize
-        window.addEventListener('resize', onWindowResize, false);
-    }
-
-    function onMouseDown(event) {
-        isDragging = true;
-        previousMousePosition.x = event.clientX;
-        previousMousePosition.y = event.clientY;
-    }
-
-    function onMouseUp() {
-        isDragging = false;
-    }
-
-    function onMouseMove(event) {
-        if (!isDragging || !globe) return;
-
-        const deltaMove = {
-            x: event.clientX - previousMousePosition.x,
-            y: event.clientY - previousMousePosition.y
-        };
-
-        const rotationSpeed = 0.01;
-        globe.rotation.y += deltaMove.x * rotationSpeed;
-        globe.rotation.x += deltaMove.y * rotationSpeed;
-
-        previousMousePosition.x = event.clientX;
-        previousMousePosition.y = event.clientY;
-    }
-
-    function onTouchStart(event) {
-        if (event.touches.length === 1) {
-            isDragging = true;
-            previousMousePosition.x = event.touches[0].clientX;
-            previousMousePosition.y = event.touches[0].clientY;
-        }
-    }
-
-    function onTouchEnd() {
-        isDragging = false;
-    }
-
-    function onTouchMove(event) {
-        if (!isDragging || !globe || event.touches.length !== 1) return;
-        
-        event.preventDefault();
-
-        const deltaMove = {
-            x: event.touches[0].clientX - previousMousePosition.x,
-            y: event.touches[0].clientY - previousMousePosition.y
-        };
-
-        const rotationSpeed = 0.01;
-        globe.rotation.y += deltaMove.x * rotationSpeed;
-        globe.rotation.x += deltaMove.y * rotationSpeed;
-
-        previousMousePosition.x = event.touches[0].clientX;
-        previousMousePosition.y = event.touches[0].clientY;
-    }
-
-    function onWindowResize() {
-        if (!camera || !renderer || !mysteryElementContainer) return;
-        
-        camera.aspect = mysteryElementContainer.clientWidth / mysteryElementContainer.clientHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(mysteryElementContainer.clientWidth, mysteryElementContainer.clientHeight);
-    }
-
-    function animate() {
-        if (!renderer || !scene || !camera || !globe) return;
-        
-        requestAnimationFrame(animate);
-        
-        // Auto-rotation when not dragging
-        if (!isDragging) {
-            globe.rotation.x += 0.003;
-            globe.rotation.y += 0.005;
-        }
-        
-        renderer.render(scene, camera);
-    }
-
-    // Initialize Three.js when the page loads
-    function initializeThreeJS() {
-        if (typeof THREE !== 'undefined' && mysteryElementContainer) {
-            initThreeJS();
-            animate();
-        } else {
-            // Retry after a short delay if Three.js hasn't loaded yet
-            setTimeout(initializeThreeJS, 100);
-        }
-    }
-
-    // Initialize Three.js
-    initializeThreeJS();
-
     // Navbar scroll effect
     const navbar = document.querySelector('nav');
     let lastScrollTop = 0;
@@ -657,7 +481,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     `;
-    document.head.appendChild(floatStyle);
+    document.head.appendChild(floatStyle); 
 
     // Console log for developers
     console.log(`
@@ -735,24 +559,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // FEATURE 1: AUTHENTICATION
     onAuthStateChanged(auth, (user) => {
-        if (!authContainer) return;
-        if (user) {
-            // User is signed in
-            authContainer.innerHTML = `
-                <div class="flex items-center space-x-2">
-                    <img src="${user.photoURL}" alt="User" class="w-8 h-8 rounded-full border-2 border-blue-400"/>
-                    <button id="logout-btn" class="px-3 py-1 bg-red-500 text-white rounded-md text-sm font-bold hover:bg-red-600 transition">Logout</button>
-                </div>
-            `;
-            document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
-        } else {
-            // User is signed out
-            authContainer.innerHTML = `
-                <button id="login-btn" class="px-3 py-1 bg-blue-500 text-white rounded-md text-sm font-bold hover:bg-blue-600 transition">Login</button>
-            `;
-            document.getElementById('login-btn').addEventListener('click', () => signInWithPopup(auth, provider));
-        }
-    });
+    if (!authContainer) return;
+    if (user) {
+        // User is signed in
+        authContainer.innerHTML = `
+            <div class="flex items-center space-x-2">
+                <img src="${user.photoURL}" alt="User" class="w-8 h-8 rounded-full border-2 border-blue-400"/>
+                <button id="logout-btn" class="px-3 py-1 bg-red-500 text-white rounded-md text-sm font-bold hover:bg-red-600 transition flex items-center space-x-1">
+                    <i class="fas fa-sign-out-alt"></i> 
+                    <span>Logout</span>
+                </button>
+            </div>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+    } else {
+        // User is signed out
+        authContainer.innerHTML = `
+            <button id="login-btn" class="px-3 py-1 bg-blue-500 text-white rounded-md text-sm font-bold hover:bg-blue-600 transition flex items-center space-x-1">
+                <i class="fas fa-user"></i>
+                <span>Login</span>
+            </button>
+        `;
+        document.getElementById('login-btn').addEventListener('click', () => signInWithPopup(auth, provider));
+    }
+});
 
     // FEATURE 2: DYNAMIC GUIDES FROM FIRESTORE
     async function fetchAndDisplayGuides() {
