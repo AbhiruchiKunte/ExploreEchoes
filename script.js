@@ -559,24 +559,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // FEATURE 1: AUTHENTICATION
     onAuthStateChanged(auth, (user) => {
-        if (!authContainer) return;
-        if (user) {
-            // User is signed in
-            authContainer.innerHTML = `
-                <div class="flex items-center space-x-2">
-                    <img src="${user.photoURL}" alt="User" class="w-8 h-8 rounded-full border-2 border-blue-400"/>
-                    <button id="logout-btn" class="px-3 py-1 bg-red-500 text-white rounded-md text-sm font-bold hover:bg-red-600 transition">Logout</button>
-                </div>
-            `;
-            document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
-        } else {
-            // User is signed out
-            authContainer.innerHTML = `
-                <button id="login-btn" class="px-3 py-1 bg-blue-500 text-white rounded-md text-sm font-bold hover:bg-blue-600 transition">Login</button>
-            `;
-            document.getElementById('login-btn').addEventListener('click', () => signInWithPopup(auth, provider));
-        }
-    });
+    if (!authContainer) return;
+    if (user) {
+        // User is signed in
+        authContainer.innerHTML = `
+            <div class="flex items-center space-x-2">
+                <img src="${user.photoURL}" alt="User" class="w-8 h-8 rounded-full border-2 border-blue-400"/>
+                <button id="logout-btn" class="px-3 py-1 bg-red-500 text-white rounded-md text-sm font-bold hover:bg-red-600 transition flex items-center space-x-1">
+                    <i class="fas fa-sign-out-alt"></i> 
+                    <span>Logout</span>
+                </button>
+            </div>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+    } else {
+        // User is signed out
+        authContainer.innerHTML = `
+            <button id="login-btn" class="px-3 py-1 bg-blue-500 text-white rounded-md text-sm font-bold hover:bg-blue-600 transition flex items-center space-x-1">
+                <i class="fas fa-user"></i>
+                <span>Login</span>
+            </button>
+        `;
+        document.getElementById('login-btn').addEventListener('click', () => signInWithPopup(auth, provider));
+    }
+});
 
     // FEATURE 2: DYNAMIC GUIDES FROM FIRESTORE
     async function fetchAndDisplayGuides() {
