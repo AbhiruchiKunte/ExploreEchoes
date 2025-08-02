@@ -590,18 +590,70 @@ document.addEventListener('DOMContentLoaded', () => {
     onAuthStateChanged(auth, (user) => {
     if (!authContainer) return;
     if (user) {
-        // User is signed in
+        // We'll add the necessary styles to the page's head if they don't already exist.
+        if (!document.getElementById('user-menu-styles')) {
+            const styleSheet = document.createElement("style");
+            styleSheet.id = "user-menu-styles"; // Give it an ID to prevent adding it multiple times
+            styleSheet.innerHTML = `
+                .user-menu-container {
+                    position: relative;
+                }
+                .logout-button {
+                    position: absolute;
+                    top: calc(100% + 8px); 
+                    right: 0;
+                    background-color: #334155;
+                    color: white;
+                    padding: 0.5rem 1rem;
+                    border: 1px solid #4b5563;
+                    border-radius: 0.375rem;
+                    z-index: 100;
+                    opacity: 0;
+                    visibility: hidden;
+                    transform: translateY(-10px);
+                    transition: opacity 0.2s ease, transform 0.2s ease;
+                    white-space: nowrap;
+                }
+                .user-menu-container:hover .logout-button,
+                .logout-button.show {
+                    opacity: 1;
+                    visibility: visible;
+                    transform: translateY(0);
+                }
+            `;
+            document.head.appendChild(styleSheet);
+        }
+
+        // --- Set the HTML for the logged-in user ---
         authContainer.innerHTML = `
-            <div class="flex items-center space-x-2">
-                <img src="${user.photoURL}" alt="User" class="w-8 h-8 rounded-full border-2 border-blue-400"/>
-                <button id="logout-btn" class="px-3 py-1 bg-white-500 text-white rounded-md text-sm font-bold hover:bg-red-600 transition flex items-center space-x-1">
-                    <i class="fas fa-sign-out-alt"></i> 
+            <div class="user-menu-container">
+                <img id="user-photo" src="${user.photoURL}" alt="User" class="w-8 h-8 rounded-full border-2 border-blue-400 cursor-pointer"/>
+                <button id="logout-btn" class="logout-button">
+                    <i class="fas fa-sign-out-alt mr-2"></i> 
                     <span>Logout</span>
                 </button>
             </div>
         `;
-        document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
-    } else {
+
+        // --- Add Event Listeners ---
+        const userPhoto = document.getElementById('user-photo');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        userPhoto.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            logoutBtn.classList.toggle('show');
+        });
+
+        logoutBtn.addEventListener('click', () => signOut(auth));
+
+        window.addEventListener('click', () => {
+            if (logoutBtn.classList.contains('show')) {
+                logoutBtn.classList.remove('show');
+            }
+        });
+
+    }
+    else {
         // User is signed out
         authContainer.innerHTML = `
             <button id="login-btn" class="px-3 py-1 bg-white-500 text-white rounded-md text-sm font-bold hover:bg-blue-600 transition flex items-center space-x-1">
