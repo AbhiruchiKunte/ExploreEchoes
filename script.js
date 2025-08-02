@@ -5,16 +5,7 @@ import { getFirestore, collection, addDoc, getDocs, setDoc, doc } from "https://
 
 
 // --- FIREBASE CONFIGURATION ---
-// This is the configuration from your original file.
-const firebaseConfig = {
-    apiKey: "AIzaSyAmk9dEz4cBSQHTM_YUsPEPaY0Ld643fz8",
-    authDomain: "exploreechoes-73c74.firebaseapp.com",
-    projectId: "exploreechoes-73c74",
-    storageBucket: "exploreechoes-73c74.appspot.com", // Corrected storage bucket URL
-    messagingSenderId: "936836633672",
-    appId: "1:936836633672:web:f9079c4eed54bc3abdf47d",
-    measurementId: "G-K03KYZ71KZ"
-};
+import { firebaseConfig } from './firebase-config.js';
 
 // --- INITIALIZE FIREBASE & SERVICES ---
 const app = initializeApp(firebaseConfig);
