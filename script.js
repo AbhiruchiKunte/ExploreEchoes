@@ -557,6 +557,45 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    document.addEventListener('DOMContentLoaded', function () {
+    const sliderContainer = document.querySelector('.slider-container');
+    // Exit if the slider container isn't on the page
+    if (!sliderContainer) {
+        return;
+    }
+
+    const prevButton = sliderContainer.querySelector('.slider-button.prev');
+    const nextButton = sliderContainer.querySelector('.slider-button.next');
+    const radioButtons = Array.from(sliderContainer.querySelectorAll('input[type="radio"]'));
+    const numSlides = radioButtons.length;
+
+    function changeSlide(direction) {
+        const currentIndex = radioButtons.findIndex(rb => rb.checked);
+        
+        // The modulo operator (%) handles the circular loop logic elegantly.
+        let nextIndex = (currentIndex + direction + numSlides) % numSlides;
+        
+        // Check the new radio button to trigger the CSS change
+        radioButtons[nextIndex].checked = true;
+    }
+
+    // Event listeners for the previous and next buttons
+    if (prevButton && nextButton) {
+        prevButton.addEventListener('click', () => {
+            changeSlide(-1); 
+        });
+
+        nextButton.addEventListener('click', () => {
+            changeSlide(1); 
+        });
+    }
+
+    // Add automatic sliding
+    setInterval(() => {
+        changeSlide(1);
+     }, 5000); 
+});
+
     // FEATURE 1: AUTHENTICATION
     onAuthStateChanged(auth, (user) => {
     if (!authContainer) return;
