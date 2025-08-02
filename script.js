@@ -594,7 +594,7 @@ document.addEventListener('DOMContentLoaded', () => {
         authContainer.innerHTML = `
             <div class="flex items-center space-x-2">
                 <img src="${user.photoURL}" alt="User" class="w-8 h-8 rounded-full border-2 border-blue-400"/>
-                <button id="logout-btn" class="px-3 py-1 bg-red-500 text-white rounded-md text-sm font-bold hover:bg-red-600 transition flex items-center space-x-1">
+                <button id="logout-btn" class="px-3 py-1 bg-white-500 text-white rounded-md text-sm font-bold hover:bg-red-600 transition flex items-center space-x-1">
                     <i class="fas fa-sign-out-alt"></i> 
                     <span>Logout</span>
                 </button>
@@ -604,7 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         // User is signed out
         authContainer.innerHTML = `
-            <button id="login-btn" class="px-3 py-1 bg-blue-500 text-white rounded-md text-sm font-bold hover:bg-blue-600 transition flex items-center space-x-1">
+            <button id="login-btn" class="px-3 py-1 bg-white-500 text-white rounded-md text-sm font-bold hover:bg-blue-600 transition flex items-center space-x-1">
                 <i class="fas fa-user"></i>
                 <span>Login</span>
             </button>
