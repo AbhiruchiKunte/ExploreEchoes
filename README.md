@@ -16,7 +16,7 @@ Crafted to impress both users and judges, ExploreEchoes combines visual finesse,
 - 💧 Ripple Button Animation  
 - 🔠 Scroll-Based Text Animations  
 - 🎁 **Mystery Element:** 3D Travel Globe using **Three.js**  
-- 🔐 Firebase Auth + Firestore for dynamic content  
+- 🔐 Firebase Auth + Cloud Firestore for storing user inquiries  
 - ✨ Fully responsive layout for all screen sizes
 
 ---
