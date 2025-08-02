@@ -38,7 +38,7 @@ https://explore-echoes-app.vercel.app/
 ## 📬 Contact
 
 **Team Name:** *Quadcodes*  
-**Developers:** Abhiruchi Kunte and Govind Choudhari
+**Developers:** Abhiruchi Kunte and Govind Choudhari.
 * **GitHub:** [AbhiruchiKunte](https://github.com/AbhiruchiKunte)
 * **Email:** [kunteabhiruchi@gmail.com](mailto:kunteabhiruchi@gmail.com) 
 * **LinkedIn:** [Abhiruchi Kunte](https://www.linkedin.com/in/abhiruchi-kunte-00602b28b/)
