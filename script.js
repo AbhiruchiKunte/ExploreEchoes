@@ -221,16 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Parallax effect for hero section
-    const heroSection = document.querySelector('.hero-section');
-    if (heroSection) {
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const rate = scrolled * -0.5;
-            heroSection.style.transform = `translateY(${rate}px)`;
-        });
-    }
-
     // Intersection Observer for scroll animations
     const observerOptions = {
         threshold: 0.1,
