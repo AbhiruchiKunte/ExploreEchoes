@@ -641,6 +641,12 @@ nav {
     background-clip: text;
 }
 
+@media (max-width: 600px) {
+    #scroll-text {
+        font-size: 0.5rem;
+    }
+}
+
 /* Element 7: Team Section */
 #team .team-member-card {
   background: linear-gradient(135deg, #1e293b, #0f172a) !important;
@@ -1115,3 +1121,37 @@ transform: scale(0.9); transition: transform 0.3s; box-shadow: 0 10px 25px rgba(
         }
         .modal.show .modal-content { transform: scale(1); }
         .modal-close-btn { background-color: #5390e9; }
+/* Responsive Modal Styles */
+@media (max-width: 600px) {
+  .modal-content {
+    width: 95vw;
+    max-width: 98vw;
+    padding: 1rem;
+    border-radius: 0.7rem;
+    font-size: 1rem;
+  }
+  .modal-close-btn {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .modal-content {
+    padding: 0.5rem;
+    font-size: 0.95rem;
+    border-radius: 0.5rem;
+  }
+  .modal-close-btn {
+    font-size: 0.95rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+/* Ensure modal always fits viewport */
+.modal-content {
+  max-width: 95vw;
+  box-sizing: border-box;
+  word-break: break-word;
+}
