@@ -31,7 +31,7 @@ Crafted to impress both users and judges, ExploreEchoes combines visual finesse,
 
 ## 🌐 Live Demo
 
-https://explore-echoes-u7qv.vercel.app/
+https://explore-echoes-app.vercel.app/
 
 ---
 
